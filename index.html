@@ -5,40 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>(주)경성제약 실행기</title>
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; justify-content: space-around; align-items: center; }
-        .header { text-align: center; padding: 20px 0; }
-        .logo { font-size: 28px; font-weight: bold; color: #2c3e50; margin-bottom: 5px; }
-        .news-btn { background-color: #ffffff; color: #e74c3c; border: 2px solid #e74c3c; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-top: 10px; display: inline-block; text-decoration: none; }
-        .button-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; max-width: 400px; }
-        .menu-btn { background-color: #2c3e50; color: white; padding: 25px 10px; border-radius: 12px; text-align: center; text-decoration: none; font-size: 18px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .footer { text-align: center; color: #7f8c8d; font-size: 14px; padding-bottom: 20px; }
+        /* 화면을 예쁘게 꽉 채워주는 디자인 */
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; justify-content: center; align-items: center; }
+        .container { width: 90%; max-width: 450px; background: white; padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        .logo { font-size: 32px; font-weight: bold; color: #1a2a3a; margin-bottom: 10px; letter-spacing: -1px; }
+        .sub-title { color: #7f8c8d; margin-bottom: 30px; font-size: 15px; }
+        
+        /* 버튼 배치: 2열로 정렬 */
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .menu-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 110px; border-radius: 15px; text-decoration: none; font-weight: bold; font-size: 17px; color: white; transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .menu-btn:active { transform: scale(0.95); }
+        
+        /* 버튼 색상 */
+        .bg-navy { background-color: #2c3e50; }
+        .bg-orange { background-color: #e67e22; }
+        .bg-blue { background-color: #2980b9; }
+        
+        .news-link { display: block; margin-top: 20px; color: #e74c3c; font-weight: bold; text-decoration: none; border: 1.5px solid #e74c3c; padding: 10px; border-radius: 30px; font-size: 14px; }
+        .footer { margin-top: 30px; font-size: 13px; color: #bdc3c7; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">(주)경성제약</div>
-        <a href="https://www.ks-pharm.co.kr/news/news01.asp" class="news-btn">📰 장 건강 전문 뉴스 바로가기</a>
+
+<div class="container">
+    <div class="logo">(주)경성제약</div>
+    <div class="sub-title">장 건강을 위한 최고의 선택</div>
+
+    <div class="button-grid">
+        <a href="https://www.kyungsung365.com/member/member_login.asp" class="bg-navy menu-btn">
+            <span>🏠 홈페이지</span>
+            <span>로그인</span>
+        </a>
+        
+        <a href="#" onclick="forceLogout(); return false;" class="bg-orange menu-btn">
+            <span>👤 회원가입</span>
+            <span style="font-size: 13px; font-weight: normal;">(로그아웃 후)</span>
+        </a>
+        
+        <a href="https://www.kyungsung365.com/shop/shop_list.asp" class="bg-blue menu-btn">
+            <span>📦 제품소개</span>
+            <span>구매하기</span>
+        </a>
+        
+        <a href="https://www.kyungsung365.com/board/board_list.asp?code=qna" class="bg-navy menu-btn">
+            <span>📞 고객센터</span>
+            <span>문의하기</span>
+        </a>
     </div>
 
-    <div class="button-container">
-        <a href="https://www.ks-pharm.co.kr/member/member_login.asp" class="menu-btn">홈페이지<br>로그인</a>
-        <a href="#" onclick="forceLogout();" class="menu-btn" style="background-color: #e67e22;">회원가입<br>(로그아웃 후)</a>
-        <a href="https://www.ks-pharm.co.kr/shop/shop_list01.asp" class="menu-btn">제품소개<br>구매하기</a>
-        <a href="https://www.ks-pharm.co.kr/customer/customer01.asp" class="menu-btn">고객센터<br>문의하기</a>
-    </div>
+    <a href="https://www.kyungsung365.com/board/board_list.asp?code=news" class="news-link">📰 장 건강 전문 뉴스 바로가기</a>
+    
+    <div class="footer">© Gyeongseong Pharmaceutical. All Rights Reserved.</div>
+</div>
 
-    <div class="footer">언제나 당신의 장 건강을 생각합니다. ^.~</div>
-
-    <script>
-        function forceLogout() {
-            if(confirm("확실한 회원가입을 위해 기존 로그인을 해제합니다.")) {
-                // 로그아웃 페이지를 아주 잠깐 들렀다가 회원가입으로 날려버립니다.
-                location.href = "https://www.ks-pharm.co.kr/member/member_logout.asp";
-                setTimeout(function() {
-                    location.href = "https://www.ks-pharm.co.kr/member/member_join01.asp";
-                }, 800);
-            }
+<script>
+    // 선생님이 찾으셨던 그 '로그아웃 필살기' 스크립트입니다!
+    function forceLogout() {
+        if(confirm("회원가입을 위해 기존 로그인을 해제하시겠습니까?")) {
+            // 로그아웃을 먼저 실행하고 0.8초 뒤에 가입 페이지로 이동!
+            location.href = "https://www.kyungsung365.com/member/member_logout.asp";
+            setTimeout(function() {
+                location.href = "https://www.kyungsung365.com/member/member_join.asp";
+            }, 800);
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
