@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>(주)경성제약 실행기</title>
     <style>
         body { 
@@ -14,7 +14,6 @@
         }
         .main-container { width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; }
 
-        /* [요청] 로고 크기 120% 확대 적용 */
         .title-area { 
             display: flex; flex-direction: row; align-items: center; justify-content: center; 
             margin-bottom: 18px; width: 100%; cursor: pointer; 
@@ -52,13 +51,27 @@
 
     <div id="current-date-time" class="date-time-display"></div>
 
-    <div class="button-wrapper"><button class="action-button" onclick="location.href='https://www.kyungsung365.com/common/member_login.asp'">홈페이지 로그인</button></div>
-    <div class="button-wrapper"><button class="action-button" onclick="forceLogoutAndSignup()">경성제약 회원가입</button></div>
-    <div class="button-wrapper"><button class="action-button" onclick="location.href='https://www.kyungsung365.com/shop/'">쇼핑몰 / 주문</button></div>
-    <div class="button-wrapper"><button class="action-button" onclick="goLink('https://www.kyungsung365.com/myoffice/member/memberVote.asp')">추천 회원정보</button></div>
-    <div class="button-wrapper"><button class="action-button" onclick="location.href='https://youtu.be/hdLtZwNcQJs'">경성제약 유튜브</button></div>
-    <div class="button-wrapper"><button class="action-button" onclick="location.href='https://blog.naver.com/100seog/224178002933'">경성제약 장영실상</button></div>
-    <div class="button-wrapper"><button class="action-button" onclick="location.href='https://search.naver.com/search.naver?where=news&query=%EC%9E%A5+%EA%B1%B4%EA%B0%95+%EC%9C%A0%EC%82%B0%EA%B7%A0+%ED%9A%A8%EB%8A%A5'">장 건강 전문 뉴스</button></div>
+    <div class="button-wrapper">
+        <button class="action-button" onclick="location.href='https://www.kyungsung365.com/common/member_login.asp'">홈페이지 로그인</button>
+    </div>
+    <div class="button-wrapper">
+        <button class="action-button" onclick="forceLogoutAndSignup()">경성제약 회원가입</button>
+    </div>
+    <div class="button-wrapper">
+        <button class="action-button" onclick="location.href='https://www.kyungsung365.com/shop/'">쇼핑몰 / 주문</button>
+    </div>
+    <div class="button-wrapper">
+        <button class="action-button" onclick="goLink('https://www.kyungsung365.com/myoffice/member/memberVote.asp')">추천 회원정보</button>
+    </div>
+    <div class="button-wrapper">
+        <button class="action-button" onclick="location.href='https://youtu.be/hdLtZwNcQJs'">경성제약 유튜브</button>
+    </div>
+    <div class="button-wrapper">
+        <button class="action-button" onclick="location.href='https://blog.naver.com/100seog/224178002933'">경성제약 장영실상</button>
+    </div>
+    <div class="button-wrapper">
+        <button class="action-button" onclick="location.href='https://search.naver.com/search.naver?where=news&query=%EC%9E%A5+%EA%B1%B4%EA%B0%95+%EC%9C%A0%EC%82%B0%EA%B7%A0+%ED%9A%A8%EB%8A%A5'">장 건강 전문 뉴스</button>
+    </div>
 
     <div class="footer-area">
         <span class="footer-text">행복해요... ^.~</span>
@@ -74,6 +87,7 @@
 </div>
 
 <script>
+    // 시계 업데이트 기능
     function updateTime() {
         const now = new Date();
         const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -83,11 +97,13 @@
         const s = String(now.getSeconds()).padStart(2, '0');
         document.getElementById('current-date-time').textContent = `${month}월 ${date}일 ${h}:${m}:${s}`;
     }
-    setInterval(updateTime, 1000); updateTime();
+    setInterval(updateTime, 1000); 
 
+    // 모달 제어
     function showLoginModal() { document.getElementById('login-modal').style.display = 'block'; }
     function closeModal() { document.getElementById('login-modal').style.display = 'none'; }
 
+    // 정보 저장
     function saveInfo() {
         const id = document.getElementById('ksj_id_input').value;
         const pw = document.getElementById('ksj_pw_input').value;
@@ -97,21 +113,33 @@
         closeModal();
     }
 
+    // 아이디 복사 후 링크 이동
     async function goLink(url) {
         const id = localStorage.getItem('ksj_id');
         if (id) { try { await navigator.clipboard.writeText(id); } catch (e) {} }
         location.href = url;
     }
 
-    /* [해결] 로그아웃 후 회원가입으로 확실히 보냅니다 */
+    /* [수정] 핵심 묘수: 로그아웃을 먼저 처리하고 가입 페이지로 안전하게 이동합니다 */
     function forceLogoutAndSignup() {
-        if(confirm("확실한 회원가입을 위해 기존 로그인을 해제합니다.")) {
-            location.href = "https://www.kyungsung365.com/common/member_logout.asp";
-            setTimeout(function() {
-                location.href = "https://www.kyungsung365.com/common/joinStep01.asp";
-            }, 500); // 0.5초 대기 후 이동
-        }
+        // 1. 세션 스토리지에 가입 페이지로 가야 한다는 '표식'을 남깁니다.
+        sessionStorage.setItem('pendingSignup', 'true');
+        
+        // 2. 먼저 로그아웃 페이지로 이동합니다. (기록을 남기지 않고 교체)
+        location.replace("https://www.kyungsung365.com/common/member_logout.asp");
     }
+
+    // 페이지가 로드될 때마다 실행되는 초기화 함수
+    window.onload = function() {
+        // 시계 시작
+        updateTime();
+        
+        // 만약 로그아웃을 거쳐온 '가입 표식'이 있다면 가입 페이지로 최종 이동합니다.
+        if (sessionStorage.getItem('pendingSignup') === 'true') {
+            sessionStorage.removeItem('pendingSignup'); // 표식 제거
+            location.replace("https://www.kyungsung365.com/common/joinStep01.asp");
+        }
+    };
 </script>
 </body>
 </html>
