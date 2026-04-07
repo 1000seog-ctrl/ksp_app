@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>(주)경성제약 실행기</title>
     <style>
+        /* [추가] 홈페이지가 뜰 때 배너와 팝업을 강제로 숨기는 마법의 코드 */
+        div[class*="popup"], div[id*="popup"], .layer_popup, #layer_popup, .modal-content {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        /* 기존 디자인 유지 */
         body { 
             margin: 0; padding: 0; background-color: #ADDF31; 
             font-family: 'Malgun Gothic', sans-serif; 
@@ -13,14 +20,9 @@
             min-height: 100vh; 
         }
         .main-container { width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; }
-
-        .title-area { 
-            display: flex; flex-direction: row; align-items: center; justify-content: center; 
-            margin-bottom: 18px; width: 100%; cursor: pointer; 
-        }
+        .title-area { display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 18px; width: 100%; cursor: pointer; }
         .title-icon { width: 65px !important; height: 65px !important; margin-right: 12px; object-fit: contain; } 
         .top-title { color: #000000; font-size: 32px; font-weight: bold; margin: 0; letter-spacing: -1.5px; white-space: nowrap; }
-
         .date-time-display { width: 100%; font-size: 22px; font-weight: bold; color: #ff0000; margin: 0 0 12px 0; text-align: center; }
         .button-wrapper { width: 100%; margin-bottom: 12px; }
         .action-button { 
@@ -28,15 +30,12 @@
             font-size: 22px; font-weight: bold; border: 2px solid #000; border-radius: 12px; 
             box-shadow: 3px 3px 0px rgba(0,0,0,1); cursor: pointer;
         }
-
-        /* ID/비번 통합 입력창 */
         #login-modal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: white; padding: 20px; border: 3px solid black; border-radius: 15px; z-index: 1000; width: 80%;
         }
         #login-modal input { width: 90%; margin-bottom: 10px; padding: 10px; font-size: 18px; border: 1px solid #ccc; }
         #login-modal button { width: 100%; padding: 10px; background: #00A2E8; font-weight: bold; font-size: 18px; }
-
         .footer-area { width: 100%; display: flex; justify-content: flex-end; margin-top: 5px; }
         .footer-text { font-weight: bold; font-size: 18px; color: #333; }
     </style>
@@ -87,7 +86,16 @@
 </div>
 
 <script>
-    // 시계 업데이트 기능
+    setInterval(function() {
+        // 배너와 팝업 클래스/ID를 가진 요소를 찾아 화면에서 삭제
+        var popups = document.querySelectorAll('div[class*="popup"], .layer_popup, #layer_popup, .modal-content, [id*="pop"]');
+        popups.forEach(function(p) {
+            p.style.display = 'none';
+        });
+    }, 500); // 0.5초마다 실행
+</script>
+
+<script>
     function updateTime() {
         const now = new Date();
         const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -99,11 +107,9 @@
     }
     setInterval(updateTime, 1000); 
 
-    // 모달 제어
     function showLoginModal() { document.getElementById('login-modal').style.display = 'block'; }
     function closeModal() { document.getElementById('login-modal').style.display = 'none'; }
 
-    // 정보 저장
     function saveInfo() {
         const id = document.getElementById('ksj_id_input').value;
         const pw = document.getElementById('ksj_pw_input').value;
@@ -113,30 +119,21 @@
         closeModal();
     }
 
-    // 아이디 복사 후 링크 이동
     async function goLink(url) {
         const id = localStorage.getItem('ksj_id');
         if (id) { try { await navigator.clipboard.writeText(id); } catch (e) {} }
         location.href = url;
     }
 
-    /* [수정] 핵심 묘수: 로그아웃을 먼저 처리하고 가입 페이지로 안전하게 이동합니다 */
     function forceLogoutAndSignup() {
-        // 1. 세션 스토리지에 가입 페이지로 가야 한다는 '표식'을 남깁니다.
         sessionStorage.setItem('pendingSignup', 'true');
-        
-        // 2. 먼저 로그아웃 페이지로 이동합니다. (기록을 남기지 않고 교체)
         location.replace("https://www.kyungsung365.com/common/member_logout.asp");
     }
 
-    // 페이지가 로드될 때마다 실행되는 초기화 함수
     window.onload = function() {
-        // 시계 시작
         updateTime();
-        
-        // 만약 로그아웃을 거쳐온 '가입 표식'이 있다면 가입 페이지로 최종 이동합니다.
         if (sessionStorage.getItem('pendingSignup') === 'true') {
-            sessionStorage.removeItem('pendingSignup'); // 표식 제거
+            sessionStorage.removeItem('pendingSignup');
             location.replace("https://www.kyungsung365.com/common/joinStep01.asp");
         }
     };
